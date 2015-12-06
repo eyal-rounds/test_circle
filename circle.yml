@@ -1,3 +1,4 @@
 test:
   pre:
     - env
+    - echo "pull request"
