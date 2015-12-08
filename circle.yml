@@ -4,6 +4,10 @@ test:
     - cat ~/.rounds_cache/build_count
   post:
     - count=$(cat ~/.rounds_cache/build_count) && echo $((count+1))> ~/.rounds_cache/build_count
+  override:
+    - ./gradlew assembleRelease
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+    - ls $CIRCLE_ARTIFACTS/*release*.apk
 dependencies:
   pre:
     - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;

@@ -5,6 +5,7 @@ buildedBranch = buildedBranch == null ? "" : buildedBranch;
 boolean isCircleCI = "true".equals(System.getenv('CIRCLECI'));
 boolean isDevelopOnCircleCi = isCircleCI && buildedBranch.equals("develop");
 boolean isMasterOnCircleCi = isCircleCI && buildedBranch.equals("master");
+println("is circleci ? ${isCircleCI} , is ondevelop ci ? ${isDevelopOnCircleCi}, is on masterci ? ${isMasterOnCircleCi}")
 
 // only if it's circleci build (not local) and if we are on develop do we need to
 // change the version name.
