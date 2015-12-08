@@ -1,11 +1,12 @@
 test:
   pre:
     - env
-    - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;
-    - if [[ ! -f ~/.rounds_cache/build_count ]] ; then echo 0 >  ~/.rounds_cache/build_count; fi;
     - cat ~/.rounds_cache/build_count
   post:
     - count=$(cat ~/.rounds_cache/build_count) && echo $((count+1))> ~/.rounds_cache/build_count)
 dependencies:
+  pre:
+    - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;
+    - if [[ ! -f ~/.rounds_cache/build_count ]] ; then echo 0 >  ~/.rounds_cache/build_count; fi;
   cache_directories:
     - ~/.rounds_cache/
