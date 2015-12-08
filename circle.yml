@@ -10,3 +10,12 @@ dependencies:
     - if [[ ! -f ~/.rounds_cache/build_count ]] ; then echo 0 >  ~/.rounds_cache/build_count; fi;
   cache_directories:
     - ~/.rounds_cache/
+deployment:
+  production:
+    branch: master
+    commands:
+      - aws s3 cp ./app/build/outputs/apk/app-debug.apk s3://rounds-android-develop/app-debug_${CIRCLE_SHA1}.apk
+  staging:
+    branch: develop
+    commands:
+      - echo deploy develop
