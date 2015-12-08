@@ -3,7 +3,7 @@ test:
     - env
     - cat ~/.rounds_cache/build_count
   post:
-    - count=$(cat ~/.rounds_cache/build_count) && echo $((count+1))> ~/.rounds_cache/build_count)
+    - count=$(cat ~/.rounds_cache/build_count) && echo $((count+1))> ~/.rounds_cache/build_count
 dependencies:
   pre:
     - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;
