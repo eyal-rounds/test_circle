@@ -7,7 +7,7 @@ test:
   override:
     - ./gradlew assembleRelease
     - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
-    - ls $CIRCLE_ARTIFACTS/*release*.apk
+    - ls $CIRCLE_ARTIFACTS/apk/*release*.apk
 dependencies:
   pre:
     - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;
