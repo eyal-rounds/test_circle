@@ -19,8 +19,8 @@ deployment:
   production:
     branch: master
     commands:
-      - ./scripts/
+      - ./scripts/deplot_to_s3.sh
   staging:
     branch: develop
     commands:
-      -
+      - ./scripts/deplot_to_s3.sh
