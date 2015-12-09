@@ -12,7 +12,9 @@ println("is circleci ? ${isCircleCI} , is use counter on ci ? ${isUseCounterOnCI
 // only if it's circleci build (not local) and if we are on develop do we need to
 // change the version name.
 if( isUseCounterOnCI ){
-    addCounterToVersionName();
+    project.afterEvaluate({
+        addCounterToVersionName();
+    });
 }
 
 if( isMasterOnCircleCi ){
