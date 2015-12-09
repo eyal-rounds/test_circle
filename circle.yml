@@ -8,6 +8,7 @@ test:
     - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
 dependencies:
   pre:
+   - chmod a+z ./scripts/make_build_count.sh
    - ./scripts/make_build_count.sh
   cache_directories:
     - ~/.rounds_cache/
