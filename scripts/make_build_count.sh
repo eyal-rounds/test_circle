@@ -34,7 +34,7 @@ else
     #if we already have build count file, increase it by one for the build process.
     count=$(cat ~/.rounds_cache/build_count|tr -d ' \t')
     echo $((count+1))> ~/.rounds_cache/build_count
-    echo "increased build count not its $(cat ~/.rounds_cache/build_count)"
+    echo "increased build count now its $(cat ~/.rounds_cache/build_count)"
 fi
 #if it's just new version also cache the new version name
 if [[ "$curr_ver" != "$cached_ver" ]]

@@ -12,6 +12,7 @@ else
 fi
 
 file=$(ls $CIRCLE_ARTIFACTS/apk/*release*.apk|grep -vi unaligned)
+file=${file##*/}
 echo "found file ${file} to deploy"
 echo "deploying ${file} to s3://rounds-android-${bucketTag}/${file}"
 aws s3 cp ${file} s3://rounds-android-${bucketTag}/${file}
