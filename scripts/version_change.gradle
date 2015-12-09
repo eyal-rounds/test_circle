@@ -29,7 +29,7 @@ void addCounterToVersionName(){
     count = (count == null || count.length() == 0) ? "0" : count;
     String origVerName = android.defaultConfig.versionName;
     android.defaultConfig.versionName = origVerName + "_" + count;
-    println("new verrsion name is : ${android.defaultConfig.versionName}");
+    println("\nnew verrsion name is : ${android.defaultConfig.versionName}");
 }
 
 /**

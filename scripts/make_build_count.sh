@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_DIR=app
+APP_DIR=./app
 BRANCH_FOR_VERSION_COUNT=$BRANCH_WITH_COUNTER
 
 #if it's not the branch we want to use counter in, exit now
@@ -17,7 +17,7 @@ then
     echo rounds_cache dir created
 fi
 #get current version name from the gradle file.
-curr_ver=$(cat ${APP_DIR}/build.gradle |grep versionName|tr -d ' \t'|sed -e 's/ *versionName *\"\(.*\)\"/\1/g')
+curr_ver=$(cat ${APP_DIR}/build.gradle |grep "$ *versionName *"|tr -d ' \t'|sed -e 's/ *versionName *\"\(.*\)\"/\1/g')
 if [[ ! -f ~/.rounds_cache/version_name ]]
 then
     echo $curr_ver > ~/.rounds_cache/version_name
