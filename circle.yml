@@ -19,7 +19,8 @@ deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp ./app/build/outputs/apk/app-debug.apk s3://rounds-android-develop/app-debug_${CIRCLE_SHA1}.apk
+      - file=$(ls $CIRCLE_ARTIFACTS/apk/*release*.apk|grep -vi unaligned)
+      - aws s3 cp $file s3://rounds-android-develop/app-release_${CIRCLE_SHA1}.apk
   staging:
     branch: develop
     commands:

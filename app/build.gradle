@@ -31,3 +31,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 }
+
+android.applicationVariants.all { variant ->
+    if(variant.buildType.name == "release"){
+        variant.properties.each {
+            println("^^^ ${it}")
+        }
+        def temp = variant.outputs[0]
+        temp.properties.each{
+            println("@@@ ${it}")
+        }
+    }
+}
