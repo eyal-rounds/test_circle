@@ -11,11 +11,11 @@ else
     exit 0
 fi
 
-file=$(ls $CIRCLE_ARTIFACTS/apk/*release*.apk|grep -vi unaligned)
-file=${file##*/}
-echo "found file ${file} to deploy"
-echo "deploying ${file} to s3://rounds-android-${bucketTag}/${file}"
-aws s3 cp ${file} s3://rounds-android-${bucketTag}/${file}
+fileWithPath=$(ls $CIRCLE_ARTIFACTS/apk/*release*.apk|grep -vi unaligned)
+fileOnly=${file##*/}
+echo "found file ${fileWithPath} to deploy"
+echo "deploying ${fileWithPath} to s3://rounds-android-${bucketTag}/${fileOnly}"
+aws s3 cp ${fileWithPath} s3://rounds-android-${bucketTag}/${fileOnly}
 if [[ $? -eq 0 ]]
 then
     echo "deploy success"
