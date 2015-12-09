@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply from:'./scripts/version_change.gradle'
+apply from:'../scripts/version_change.gradle'
 
 android {
     compileSdkVersion 23
@@ -33,13 +33,11 @@ dependencies {
 }
 
 android.applicationVariants.all { variant ->
-    if(variant.buildType.name == "release"){
-        variant.properties.each {
-            println("^^^ ${it}")
-        }
-        def temp = variant.outputs[0]
-        temp.properties.each{
-            println("@@@ ${it}")
+    variant.outputs.each { output ->
+        def outputFile = output.outputFile
+        if (outputFile != null && outputFile.name.endsWith('.apk')) {
+            def fileName = outputFile.name.replace('.apk', "-${versionName}.apk")
+            output.outputFile = new File(outputFile.parent, fileName)
         }
     }
 }
