@@ -1,6 +1,13 @@
 #!/bin/bash
 
 APP_DIR=app
+BRANCH_FOR_VERSION_COUNT=$BRANCH_WITH_COUNTER
+
+#if it's not the branch we want to use counter in, exit now
+if [[ "CIRCLE_BRANCH" != "$BRANCH_FOR_VERSION_COUNT" ]]
+then
+    exit 0
+fi
 
 #build the chache dir
 if [[ ! -d ~/.rounds_cache/ ]]

@@ -1,15 +1,17 @@
 import java.nio.charset.StandardCharsets
 
 String buildedBranch = System.getenv('CIRCLE_BRANCH');
+String branchToUseCounter = System.getenv('BRANCH_WITH_COUNTER') == null ? "" :
+    System.getenv('BRANCH_WITH_COUNTER');
 buildedBranch = buildedBranch == null ? "" : buildedBranch;
 boolean isCircleCI = "true".equals(System.getenv('CIRCLECI'));
-boolean isDevelopOnCircleCi = isCircleCI && buildedBranch.equals("develop");
+boolean isUseCounterOnCI = isCircleCI && buildedBranch.equals(branchToUseCounter);
 boolean isMasterOnCircleCi = isCircleCI && buildedBranch.equals("master");
-println("is circleci ? ${isCircleCI} , is ondevelop ci ? ${isDevelopOnCircleCi}, is on masterci ? ${isMasterOnCircleCi}")
+println("is circleci ? ${isCircleCI} , is use counter on ci ? ${isUseCounterOnCI}, is on masterci ? ${isMasterOnCircleCi}")
 
 // only if it's circleci build (not local) and if we are on develop do we need to
 // change the version name.
-if( isDevelopOnCircleCi ){
+if( isUseCounterOnCI ){
     addCounterToVersionName();
 }
 

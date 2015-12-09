@@ -1,3 +1,6 @@
+machine:
+  environment:
+    BRANCH_WITH_COUNTER: develop
 test:
   pre:
     - env|sort
