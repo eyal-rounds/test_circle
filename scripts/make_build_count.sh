@@ -17,7 +17,7 @@ then
     echo rounds_cache dir created
 fi
 #get current version name from the gradle file.
-curr_ver=$(cat ${APP_DIR}/build.gradle |grep "$ *versionName *"|tr -d ' \t'|sed -e 's/ *versionName *\"\(.*\)\"/\1/g')
+curr_ver=$(cat ${APP_DIR}/build.gradle ||egrep "\ +versionName \""|tr -d ' \t'|sed -e 's/ *versionName *\"\(.*\)\"/\1/g')
 if [[ ! -f ~/.rounds_cache/version_name ]]
 then
     echo $curr_ver > ~/.rounds_cache/version_name
