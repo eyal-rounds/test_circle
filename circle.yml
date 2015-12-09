@@ -23,4 +23,5 @@ deployment:
   staging:
     branch: develop
     commands:
+      - ls
       - ./scripts/deplot_to_s3.sh
