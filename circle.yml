@@ -25,3 +25,4 @@ deployment:
     commands:
       - ls
       - ./scripts/deploy_to_s3.sh
+      - echo
