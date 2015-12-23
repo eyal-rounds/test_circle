@@ -11,8 +11,7 @@ test:
     - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
 dependencies:
   pre:
-   - chmod a+x ./scripts/make_build_count.sh
-   - ./scripts/make_build_count.sh
+   - if [ -e ./gradlew ]; then ./gradlew updateVersionNameAndCounter;else gradle updateVersionNameAndCounter;fi  
   cache_directories:
     - ~/.rounds_cache/
 deployment:
@@ -23,6 +22,4 @@ deployment:
   staging:
     branch: develop
     commands:
-      - ls
       - ./scripts/deploy_to_s3.sh
-      - echo

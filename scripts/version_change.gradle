@@ -1,5 +1,3 @@
-import java.nio.charset.StandardCharsets
-
 String buildedBranch = System.getenv('CIRCLE_BRANCH');
 String branchToUseCounter = System.getenv('BRANCH_WITH_COUNTER') == null ? "" :
     System.getenv('BRANCH_WITH_COUNTER');
@@ -11,23 +9,30 @@ println("is circleci ? ${isCircleCI} , is use counter on ci ? ${isUseCounterOnCI
 
 // only if it's circleci build (not local) and if we are on develop do we need to
 // change the version name.
-if( isUseCounterOnCI ){
-    project.afterEvaluate({
-        addCounterToVersionName();
-    });
-}
-project.afterEvaluate {
-	android.buildTypes.release.versionNameSuffix = android.defaultConfig.versionName
+project.android.applicationVariants.all { variant ->
+	if( isUseCounterOnCI ){
+       	addCounterToVersionName(variant);
+		println("adding counter to version");
+	}
+    variant.outputs.each { output ->
+		 output.outputFile = new File(output.outputFile.parent, 
+					output.outputFile.name.replace(".apk", "-" + variant.mergedFlavor.versionName + ".apk"))
+    }		
 }
 
 /**
  * add the version count from circleci cache to the android.defaultConfig.versionName.
  */
-void addCounterToVersionName(){
+void addCounterToVersionName(def variant){
     String count = readBuildCount();
     count = (count == null || count.length() == 0) ? "0" : count;
+	project.ext.origVersionName = android.defaultConfig.versionName;
     String origVerName = android.defaultConfig.versionName;
-    android.defaultConfig.versionName = origVerName + "_" + count;
+	variant.mergedFlavor.versionName += ("_" + count)
+    variant.outputs.each { output ->
+		 output.outputFile = new File(output.outputFile.parent, 
+					output.outputFile.name.replace(".apk", "-" + variant.mergedFlavor.versionName + ".apk"))
+    }	
     println("\nnew verrsion name is : ${android.defaultConfig.versionName}");
 }
 
@@ -60,24 +65,24 @@ String readBuildCount(){
 
 void increaseBuildCount(){
 	String countStr = readBuildCount();
-	int count = (countStr != null && countStr.length != 0) ? Integer.parseInt(countStr) :
+	int count = (countStr != null && countStr.length() != 0) ? Integer.parseInt(countStr) :
 		0;
-	writeToBuildCountFile(String.valueOf(count));
+	writeToBuildCountFile(String.valueOf(count+1));
 }
 
 void writeToBuildCountFile(String value){
 	File buildCountFile = new File(getCacheDirFile(), "build_count")
-	if( buildCountFile.exists() && buildCountFile.canWrite() ){
-		buildCountFile.withWriter { w->
-			w.print(value);
-		}
-	}   
+	if( ! buildCountFile.exists() ){
+		buildCountFile.createNewFile();
+	}
+	buildCountFile.withWriter { w->
+		w.print(value);
+	}
 }
 
 String readCachedVersionName(){
-	String homeDir = "$System.env.HOME"	
 	String versionName = "";
-	File versionNameFile = new File(homeDir, ".rounds_cache/version_name")
+	File versionNameFile = new File(getCacheDirFile(),"version_name")
 	if( versionNameFile.exists() && versionNameFile.canRead() ){
 		versionName = versionNameFile.getText("UTF-8");
 		versionName = versionName.trim()
@@ -86,13 +91,12 @@ String readCachedVersionName(){
 }
 
 void writeVersionNameToCache(String versionName){
-	String homeDir = "$System.env.HOME"	
-	File versionNameFile = new File(homeDir, ".rounds_cache/version_name")
+	File versionNameFile = new File(getCacheDirFile(),"version_name")
 	if( ! versionNameFile.exists()) {
 		versionNameFile.createNewFile();
 	}
 	versionNameFile.withWriter { w ->
-		versionName.print(versionName)
+		w.print(versionName)
 	}
 }
 
@@ -106,10 +110,10 @@ task createCachedir << {
 
 task updateVersionNameAndCounter(dependsOn: 'createCachedir') << {
 	String cachedVersionName = readCachedVersionName();
-	if( android.defaultConfig.versionName.equals(cachedVersionName) ){
+	if( origVersionName.equals(cachedVersionName) ){
 		increaseBuildCount()
 	}else{
-		writeVersionNameToCache(android.defaultConfig.versionName);
+		writeVersionNameToCache(origVersionName);
 		writeToBuildCountFile("0");
 	}
 }
