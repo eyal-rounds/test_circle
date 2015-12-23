@@ -16,9 +16,8 @@ if( isUseCounterOnCI ){
         addCounterToVersionName();
     });
 }
-
-if( isMasterOnCircleCi ){
-    //leave empty at the moment, i'm not sure where i'll take the revision from.
+project.afterEvaluate {
+	android.buildTypes.release.versionNameSuffix = android.defaultConfig.versionName
 }
 
 /**
@@ -32,27 +31,85 @@ void addCounterToVersionName(){
     println("\nnew verrsion name is : ${android.defaultConfig.versionName}");
 }
 
+File getCacheDirFile(){
+	String homeDir = "$System.env.HOME"
+	File cacheDir = new File(homeDir, ".rounds_cache");
+	return cacheDir;
+}
+
 /**
  * read the build counter from circleci home dir:
- * ~/.rounds_cache/build_count, it's a text file
- * trim it in the end to avoid \n in our text.
+ * ~/.rounds_cache/build_count, it's a text file.
  * @return the build count string or empty string if failed.
  */
 String readBuildCount(){
     String count = "";
-    String homeDir = "$System.env.HOME"
-    if( homeDir != null && homeDir.length() != 0){
-        File buildCountFile = new File(homeDir, ".rounds_cache/build_count")
-        if( buildCountFile.exists() && buildCountFile.canRead() ){
-            try{
-                FileInputStream fis = new FileInputStream(buildCountFile);
-                byte[] buff = new byte[6];
-                int read = fis.read(buff);
-                count = new String(buff, 0, read, StandardCharsets.US_ASCII).trim();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
+    File buildCountFile = new File(getCacheDirFile(), "build_count")
+    if( buildCountFile.exists() && buildCountFile.canRead() ){
+    	try{
+			List<String> lines = buildCountFile.readLines("UTF-8");
+			if( lines != null && lines.size() > 0){
+				count = lines[0]
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
     return count;
+}
+
+void increaseBuildCount(){
+	String countStr = readBuildCount();
+	int count = (countStr != null && countStr.length != 0) ? Integer.parseInt(countStr) :
+		0;
+	writeToBuildCountFile(String.valueOf(count));
+}
+
+void writeToBuildCountFile(String value){
+	File buildCountFile = new File(getCacheDirFile(), "build_count")
+	if( buildCountFile.exists() && buildCountFile.canWrite() ){
+		buildCountFile.withWriter { w->
+			w.print(value);
+		}
+	}   
+}
+
+String readCachedVersionName(){
+	String homeDir = "$System.env.HOME"	
+	String versionName = "";
+	File versionNameFile = new File(homeDir, ".rounds_cache/version_name")
+	if( versionNameFile.exists() && versionNameFile.canRead() ){
+		versionName = versionNameFile.getText("UTF-8");
+		versionName = versionName.trim()
+	}
+	return versionName;
+}
+
+void writeVersionNameToCache(String versionName){
+	String homeDir = "$System.env.HOME"	
+	File versionNameFile = new File(homeDir, ".rounds_cache/version_name")
+	if( ! versionNameFile.exists()) {
+		versionNameFile.createNewFile();
+	}
+	versionNameFile.withWriter { w ->
+		versionName.print(versionName)
+	}
+}
+
+task createCachedir << {
+	String homeDir = "$System.env.HOME"	
+	File cacheDir = new File(homeDir,"/.rounds_cache")
+	if( ! cacheDir.exists()){
+		cacheDir.mkdir()
+	}
+}
+
+task updateVersionNameAndCounter(dependsOn: 'createCachedir') << {
+	String cachedVersionName = readCachedVersionName();
+	if( android.defaultConfig.versionName.equals(cachedVersionName) ){
+		increaseBuildCount()
+	}else{
+		writeVersionNameToCache(android.defaultConfig.versionName);
+		writeToBuildCountFile("0");
+	}
 }
