@@ -1,26 +1,25 @@
+machine:
+  environment:
+    BRANCH_WITH_COUNTER: develop
 test:
   pre:
-    - env
+    - env|sort
     - cat ~/.rounds_cache/build_count
-  post:
 
   override:
     - ./gradlew assembleRelease
     - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
-    - ls $CIRCLE_ARTIFACTS/apk/*release*.apk
 dependencies:
   pre:
-    - if [[ ! -d ~/.rounds_cache/ ]] ; then mkdir -p ~/.rounds_cache/; fi;
-    - if [[ ! -f ~/.rounds_cache/build_count ]] ; then echo 0 >  ~/.rounds_cache/build_count; fi;
-    - count=$(cat ~/.rounds_cache/build_count) && echo $((count+1))> ~/.rounds_cache/build_count
+   - if [ -e ./gradlew ]; then ./gradlew updateVersionNameAndCounter;else gradle updateVersionNameAndCounter;fi  
   cache_directories:
     - ~/.rounds_cache/
 deployment:
   production:
     branch: master
     commands:
-      - aws s3 cp ./app/build/outputs/apk/app-debug.apk s3://rounds-android-develop/app-debug_${CIRCLE_SHA1}.apk
+      - ./scripts/deplot_to_s3.sh
   staging:
     branch: develop
     commands:
-      - echo deploy develop
+      - ./scripts/deploy_to_s3.sh

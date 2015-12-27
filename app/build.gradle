@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
-apply from:'./scripts/version_change.gradle'
+apply plugin: 'testfairy'
+apply from:'../scripts/version_change.gradle'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.example.eyal.myapplication"
+        applicationId "com.rounds.tftest.myapplication"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.1_local"
     }
     signingConfigs{
         release.initWith(debug)
@@ -23,6 +24,10 @@ android {
             signingConfig signingConfigs.release
         }
     }
+	testfairyConfig {
+        apiKey "33dd61d2f50e97f04c4cc639823039e108277e1f"
+		autoUpdate true
+    }
 }
 
 dependencies {
@@ -30,4 +35,16 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+}
+
+afterEvaluate{
+	tasks['testfairyRelease'].onlyIf({ 
+		def process = "git name-rev --name-only HEAD".execute()
+		def branch = "${process.text.trim()}"
+		return branch.contains("release")
+	})
+	println("###2 ${tasks['testfairyRelease']}")
+
+}
+task myRelease(dependsOn: ['testfairyRelease','assembleRelease'])<<{
 }
