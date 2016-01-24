@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'testfairy'
 apply from:'../scripts/version_change.gradle'
 
 android {
@@ -24,10 +23,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-	testfairyConfig {
-        apiKey "33dd61d2f50e97f04c4cc639823039e108277e1f"
-		autoUpdate true
-    }
 }
 
 dependencies {
@@ -37,14 +32,5 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
 }
 
-afterEvaluate{
-	tasks['testfairyRelease'].onlyIf({ 
-		def process = "git name-rev --name-only HEAD".execute()
-		def branch = "${process.text.trim()}"
-		return branch.contains("release")
-	})
-	println("###2 ${tasks['testfairyRelease']}")
-
-}
-task myRelease(dependsOn: ['testfairyRelease','assembleRelease'])<<{
+task myRelease(dependsOn: ['assembleRelease'])<<{
 }
