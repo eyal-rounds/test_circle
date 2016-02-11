@@ -1,4 +1,4 @@
-#!/bin/bash  
+#!/bin/bash -x 
 
 function showHelp(){
     echo -e "help: command construct is \n$0 [version name]"
