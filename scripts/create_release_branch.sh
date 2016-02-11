@@ -79,8 +79,8 @@ else
 	validateOnDevelopBranchOrExit
 	#create base params - base dir for reference based on the script dir
 	#and version name
-	scriptsDir=$(dirname $(python -c 'import sys,os; os.path.realpath(sys.argv[1])' ${BASH_SOURCE[0]}))
-	baseDir=$(python -c 'import sys,os; os.path.realpath(sys.argv[1])' ${scriptsDir}/../)
+	scriptsDir=$(dirname $(python -c 'import sys,os; print(os.path.realpath(sys.argv[1]))' ${BASH_SOURCE[0]}))
+	baseDir=$(python -c 'import sys,os; print(os.path.realpath(sys.argv[1]))' ${scriptsDir}/../)
 	versionName=$1
 	echo will use versionName=${versionName}
 	#define the branch name and tag name to mark the base of the branch
