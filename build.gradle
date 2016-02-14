@@ -18,6 +18,8 @@ allprojects {
     }
 }
 
+//adding remarks so we'll have a merge
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
