@@ -14,12 +14,3 @@ dependencies:
    - if [ -e ./gradlew ]; then ./gradlew updateVersionNameAndCounter;else gradle updateVersionNameAndCounter;fi  
   cache_directories:
     - ~/.rounds_cache/
-deployment:
-  production:
-    branch: master
-    commands:
-      - ./scripts/deplot_to_s3.sh
-  staging:
-    branch: develop
-    commands:
-      - ./scripts/deploy_to_s3.sh
