@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from:'../scripts/version_change.gradle'
 
 android {
     compileSdkVersion 23
@@ -9,8 +8,16 @@ android {
         applicationId "com.rounds.tftest.myapplication"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.1_"
+        versionCode 2
+        versionName "1.1.1"
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_TOOLCHAIN=clang'
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
     }
     signingConfigs{
         release.initWith(debug)
@@ -23,6 +30,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
 }
 
 dependencies {
@@ -32,5 +44,3 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
 }
 
-task myRelease(dependsOn: ['assembleRelease'])<<{
-}
