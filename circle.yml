@@ -21,5 +21,7 @@ checkout:
   #this is needed on circleci for projects which are using submodules ,circle ci by default doesn't checkout\updates
   # submodules
   post:
+    - env|sort
+    - if [[ "$IS_DAILY" == "true" ]]; then echo is daily!;git checkout master && git pull;fi
     - git submodule sync
     - git submodule update --init
