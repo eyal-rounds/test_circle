@@ -9,8 +9,7 @@ test:
   pre:
     - env|sort
   override:
-    - ./gradlew assembleRelease
-    - cp -r app/build/outputs/* $CIRCLE_ARTIFACTS
+    - echo testing to see if i see this line from develop
 dependencies:
   cache_directories:
         - ~/android-ndk-r12b
