@@ -18,7 +18,7 @@ dependencies:
     - if [[ ! -e ~/android-ndk-r12b ]]; then wget https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip && unzip -d ~ android-ndk-r12b-linux-x86_64.zip; fi
     - echo y|android update sdk --no-ui --all --filter tools
     - echo y|sdkmanager "cmake;3.6.3155560"
-    - ./gradlew dependencies
+    - ./gradlew dependencies 
     - git checkout experiment
 checkout:
   #this is needed on circleci for projects which are using submodules ,circle ci by default doesn't checkout\updates
