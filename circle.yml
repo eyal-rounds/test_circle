@@ -1,3 +1,7 @@
+checkout:
+  pre:
+    - git clone --recursive git@github.com:kikinteractive/rkik.android.git
+
 test:
   pre:
     - env
